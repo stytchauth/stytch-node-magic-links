@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    font-family: "Optima", sans-serif;
+    height: 100vh;
+    text-align: center;
+}
+
+.nav {
+    align-items: center;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    height: 55px;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.navItem {
+    margin-right: 30px;
+    font-size: 20px;
+}
+
+.icon {
+    height: 24px;
+    margin-left: 5px;
+    width: 24px;
+}
+
+.content {
+    align-items: center;
+    background-image: url("../images/hellosocks-background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.card {
+    align-items: center;
+    background-color: white;
+    display: flex;
+    height: 400px;
+    justify-content: center;
+    width: 720px;
+}
+
+.cardContent {
+    text-align: center;
+}
+
+p {
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 30px;
+}
+
+.actions {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+input {
+    border: 1px solid black;
+    border-radius: 0px;
+    font-family: "Optima", sans-serif;
+    font-size: 16px;
+    height: 18px;
+    width: 280px;
+    padding: 10px;
+}
+
+input:focus {
+    outline: 0;
+}
+
+.arrow {
+    border: none;
+    cursor: pointer;
+    height: 40px;
+    margin-left: 5px;
+    padding: 0;
+
+    width: 40px;
+}
+
+a {
+    font-size: 20px;
+}
+
+a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+h1 {
+    font-size: 40px;
+}
