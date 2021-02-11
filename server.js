@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const url = require('url');
 const stytch = require("stytch")
 
+require('dotenv').config()
+
 const app = express();
 const port = process.env.PORT;
 const path = `http://localhost:${port}`
@@ -49,11 +51,11 @@ app.post('/login_or_create_user', function (req, res) {
         });
 })
 
-// this is the endpoint the link in the magic link hits takes the token from the
+// This is the endpoint the link in the magic link hits. It takes the token from the
 // link's query params and hits the stytch authenticate endpoint to verify the token is valid
 app.get('/authenticate', function (req, res) {
     const queryObject = url.parse(req.url,true).query;
-    client.authenticateMagicLink(queryObject.token, null)
+    client.authenticateMagicLink(queryObject.token)
         .then(
             // on success render the logged in view
             res.render('loggedIn')
