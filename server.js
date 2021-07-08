@@ -34,12 +34,12 @@ app.get("/", (req, res) => {
 // takes the email entered on the homepage and hits the stytch
 // loginOrCreateUser endpoint to send the user a magic link
 app.post('/login_or_create_user', function (req, res) {
-    const params = stytch.LoginOrCreateRequest = {
+    const params = {
         email: req.body.email,
         login_magic_link_url: magicLinkUrl,
         signup_magic_link_url: magicLinkUrl,
     };
-    client.loginOrCreate(params)
+    client.magicLinks.email.loginOrCreate(params)
         .then(
             // on success, render the emailSent page
             res.render('emailSent')
@@ -55,7 +55,7 @@ app.post('/login_or_create_user', function (req, res) {
 // link's query params and hits the stytch authenticate endpoint to verify the token is valid
 app.get('/authenticate', function (req, res) {
     const queryObject = url.parse(req.url,true).query;
-    client.authenticateMagicLink(queryObject.token)
+    client.magicLinks.authenticate(queryObject.token)
         .then(
             // on success render the logged in view
             res.render('loggedIn')
