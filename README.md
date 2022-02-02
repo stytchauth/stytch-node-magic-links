@@ -8,6 +8,7 @@ This example app uses the [Stytch API](https://stytch.com/docs/api) to send and 
    your [Stytch dashboard](https://stytch.com/dashboard/api-keys).
 2. Add `http://localhost:4567/authenticate` (the `PORT` set in `.env`) as a valid sign-up and
    login URL on your [Stytch dashboard](https://stytch.com/dashboard/redirect-urls).
-3. Run `npm start`
-4. Visit `http://localhost:4567` and login with your email. Then check for the Stytch email and
+3. Run `npm i`
+4. Run `npm start`
+5. Visit `http://localhost:4567` and login with your email. Then check for the Stytch email and
    click the sign in button. You should be signed in!
