@@ -10,5 +10,5 @@ This example app uses the [Stytch API](https://stytch.com/docs/api) to send and 
    login URL on your [Stytch dashboard](https://stytch.com/dashboard/redirect-urls).
 3. Run `npm i`
 4. Run `npm start`
-5. Visit `http://localhost:4567` and login with your email. Then check for the Stytch email and
+5. Visit `http://localhost:3000` and login with your email. Then check for the Stytch email and
    click the sign in button. You should be signed in!
