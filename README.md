@@ -2,6 +2,10 @@
 
 This example app uses the [Stytch API](https://stytch.com/docs/api) and backend Node SDK to send and authenticate magic links.
 
+<p align="center">
+  <img src="./public/images/example-app-image.png" alt="stytch" width="50%"/>
+</p>
+
 # Running locally
 
 ## Set up
