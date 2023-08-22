@@ -22,7 +22,7 @@ app.set('view engine', 'ejs')
 const client = new stytch.Client({
         project_id: process.env.STYTCH_PROJECT_ID,
         secret: process.env.STYTCH_SECRET,
-        env: stytch.envs.test,
+        env: stytch.envs.live,
     }
 );
 
@@ -55,10 +55,15 @@ app.post('/login_or_create_user', function (req, res) {
 // link's query params and hits the stytch authenticate endpoint to verify the token is valid
 app.get('/authenticate', function (req, res) {
     const queryObject = url.parse(req.url,true).query;
-    client.magicLinks.authenticate(queryObject.token)
-        .then(
+    const authenticateParams = {
+        token: queryObject.token
+    }
+    client.magicLinks.authenticate(authenticateParams)
+        .then(resp => {
             // on success render the logged in view
+            console.log('Response', resp)
             res.render('loggedIn')
+        }
         )
         .catch(err => {
             // on failure, log the error then render the homepage
