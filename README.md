@@ -1,6 +1,6 @@
 # stytch-node-magic-links
 
-This example app uses the [Stytch API](https://stytch.com/docs/api) and backend Node SDK to send and authenticate magic links.
+This example app uses the [Stytch API](https://stytch.com/docs/api) and backend Node SDK to demonstrate a quick Stytch implementation using our [Email Magic Links](https://stytch.com/docs/guides/magic-links/email-magic-links/api) product.
 
 <p align="center">
   <img src="./public/images/example-app-image.png" alt="stytch" width="50%"/>
