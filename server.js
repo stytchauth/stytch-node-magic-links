@@ -63,8 +63,7 @@ app.get('/authenticate', function (req, res) {
             // on success render the logged in view
             console.log('Response', resp)
             res.render('loggedIn')
-        }
-        )
+        })
         .catch(err => {
             // on failure, log the error then render the homepage
             console.log(err)
