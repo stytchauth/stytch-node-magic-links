@@ -1,14 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const url = require('url');
-const stytch = require("stytch")
+const stytch = require("stytch");
+const session = require('express-session');
 
 require('dotenv').config()
 
 const app = express();
 const port = process.env.PORT;
 const path = `http://localhost:${port}`
-const magicLinkUrl = `${path}/authenticate`
 
 // bodyParser allows us to access the body of the post request
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,6 +16,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 // set app to use ejs so we can use html templates
 app.set('view engine', 'ejs')
+// express-sessions for cookie storage
+app.use(session({
+    secret: 'some-secret-key',
+    resave: false,
+    saveUninitialized: true
+}));
 
 // define the stytch client using your stytch project id & secret
 // use stytch.envs.live if you want to hit the live api
@@ -27,8 +33,17 @@ const client = new stytch.Client({
 );
 
 // define the homepage route
-app.get("/", (req, res) => {
-    res.render('loginOrSignUp');
+// if valid session not present, shows login
+app.get("/", async (req, res) => {
+
+    const user = await getAuthenticatedUser(req)
+
+    if (!user) {
+        res.render('loginOrSignUp');
+    } else {
+        res.render('loggedIn', {emailAddress: user.emails[0].email});
+    }
+    
 });
 
 // takes the email entered on the homepage and hits the stytch
@@ -36,8 +51,6 @@ app.get("/", (req, res) => {
 app.post('/login_or_create_user', function (req, res) {
     const params = {
         email: req.body.email,
-        login_magic_link_url: magicLinkUrl,
-        signup_magic_link_url: magicLinkUrl,
     };
     client.magicLinks.email.loginOrCreate(params)
         .then(
@@ -53,22 +66,25 @@ app.post('/login_or_create_user', function (req, res) {
 
 // This is the endpoint the link in the magic link hits. It takes the token from the
 // link's query params and hits the stytch authenticate endpoint to verify the token is valid
-app.get('/authenticate', function (req, res) {
+app.get('/authenticate', async (req, res) => {
     const queryObject = url.parse(req.url,true).query;
-    client.magicLinks.authenticate(queryObject.token)
-        .then(
-            // on success render the logged in view
-            res.render('loggedIn')
-        )
-        .catch(err => {
-            // on failure, log the error then render the homepage
-            console.log(err)
-            res.render('loginOrSignUp')
-        });
+
+    const resp = await client.magicLinks.authenticate({
+        session_duration_minutes: 60,
+        token: queryObject.token,
+    })
+    if (resp.status_code !== 200) {
+        console.error('Authentication error')
+        res.status(500).send();
+        return;
+    }
+    req.session.sessionToken = resp.session_token
+    res.redirect('/')
 })
 
 // handles the logout endpoint
 app.get('/logout', function (req, res) {
+    req.session.destroy();
     res.render('loggedOut');
 })
 
@@ -76,3 +92,19 @@ app.get('/logout', function (req, res) {
 app.listen(port, () => {
     console.log(`Listening to requests on ${path}`);
 });
+
+// helper for getting the session authenticated user
+async function getAuthenticatedUser(req) {
+    const sessionToken = req.session.sessionToken;
+    if (!sessionToken) {
+        return;
+    }
+    const resp = await client.sessions.authenticate({session_token: sessionToken});
+    if (resp.status_code !== 200) {
+        console.log('Session not authenticated')
+        req.session.destroy();
+        return;
+    }
+    req.session.sessionToken = resp.session_token
+    return resp.user
+}
