@@ -105,5 +105,6 @@ async function getAuthenticatedUser(req) {
         req.session.destroy();
         return;
     }
+    req.session.sessionToken = resp.session_token
     return resp.user
 }
