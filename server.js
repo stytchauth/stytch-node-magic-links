@@ -41,7 +41,10 @@ app.get("/", async (req, res) => {
     if (!user) {
         res.render('loginOrSignUp');
     } else {
-        res.render('loggedIn', {emailAddress: user.emails[0].email});
+        if (user.emails.length > 0) {
+            res.render('loggedIn', {emailAddress: user.emails[0].email});
+        }
+        res.render('loggedIn', {emailAddress: user.crypto_wallets[0].crypto_wallet_address});
     }
     
 });
@@ -51,6 +54,8 @@ app.get("/", async (req, res) => {
 app.post('/login_or_create_user', function (req, res) {
     const params = {
         email: req.body.email,
+        login_magic_link_url: 'http://localhost:3000/authenticate',
+        signup_magic_link_url: 'http://localhost:3000/authenticate',
     };
     client.magicLinks.email.loginOrCreate(params)
         .then(
@@ -108,3 +113,36 @@ async function getAuthenticatedUser(req) {
     req.session.sessionToken = resp.session_token
     return resp.user
 }
+
+app.post("/crypto_wallets/authenticate/start", function (req, res) {
+    client.cryptoWallets.authenticateStart({
+        crypto_wallet_address: req.body.address,
+        crypto_wallet_type: "ethereum",
+        siwe_params: {
+            domain: 'localhost:3000',
+            uri: 'http://localhost:3000',
+            statement: 'I accept the terms of service.',
+            chain_id: 10,
+            message_request_id: 'request-123',
+            resources: ['https://resource1.com', 'https://resource2.com/claims.json']
+        }
+    }).then(function (response) {
+        return res.status(200).send(response)
+    })
+});
+
+app.post("/crypto_wallets/authenticate", async (req, res) => {
+    const resp = await client.cryptoWallets.authenticate({
+        crypto_wallet_address: req.body.address,
+        crypto_wallet_type: "ethereum",
+        signature: req.body.signature,
+        session_duration_minutes: 60,
+    })
+    if (resp.status_code !== 200) {
+        console.error('Authentication error')
+        res.status(500).send();
+        return;
+    }
+    req.session.sessionToken = resp.session_token
+    return res.status(200).send(resp)
+});
