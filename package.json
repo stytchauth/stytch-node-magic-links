@@ -20,7 +20,7 @@
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^8.6.0",
-    "ejs": "^3.1.6",
+    "ejs": "^3.1.10",
     "express": "^4.17.1",
     "express-session": "^1.18.0",
     "stytch": "^10.17.0"
